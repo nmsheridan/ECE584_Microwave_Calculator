@@ -26,7 +26,10 @@ end
 
 %% UI code & calculation prep
 
-x = linspace(f_start,f_stop,(f_stop-f_start));
+num = round(num);
+
+x = linspace(0,10000,10000);
+freqs = linspace(f_start,f_stop,10000);
 
 data_array = zeros(length(x),num);
 
@@ -46,17 +49,24 @@ userInput = inputdlg(prompt,sprintf('Enter Dielectric Constants for %i Plot(s)',
 w = str2num(userInput{1});
 h = 1;
 
-for ii=1:(f_stop-f_start)
+bar = waitbar(0, 'Calculating...');
 
+for ii=1:length(x)
+
+    f = freqs(ii);
+    
+%     f = ((ii-1)*(f_stop-f_start)/length(x))+f_start;
+%     freqs(ii) = f;
+    
     for jj=1:num
     
-        er = str2double(userInput{jj});
+        er = str2double(userInput{jj+1});
         
-        [~,z0,ee,err] = calc_microstrip_z0(er,(f_start+ii),1,handles,1);
+        [~,z0,ee,err] = calc_microstrip_z0(er,w,h,handles,1);
         
         ft = sqrt(er/ee)*(z0/(2*(4*pi*1E-07)*h));
         
-        ereff = er - ((er-ee)/(1+((ii/ft)^2)));
+        ereff = er - ((er-ee)/(1+((f/ft)^2)));
         
         if(strcmp(opt,'er'))
             data_array(ii,jj) = ereff;
@@ -64,7 +74,7 @@ for ii=1:(f_stop-f_start)
         
         if(strcmp(opt,'z0'))
             weff = (120*pi*h)/(z0*sqrt(ee));
-            we = w + ((weff-w)/(1+((ii/ft)^2)));
+            we = w + ((weff-w)/(1+((f/ft)^2)));
             
             z0f = (120*pi*h)/(we*sqrt(ereff));
             
@@ -80,17 +90,22 @@ for ii=1:(f_stop-f_start)
         
     end
     
+    waitbar((ii/length(x)),bar,'Calculating...');
+    
 end
 
+close(bar)
 
 %% Plotting
 
 cla(handles.plotter, 'reset')
 set(handles.plotter, 'XScale', 'log')
+axis(handles.plotter,[f_start f_stop 0 100])
+axis 'auto y'
 hold(handles.plotter,'on')
 
 for ii=1:num
-   p = plot(handles.plotter,x,data_array(:,ii));
+   p = plot(handles.plotter,freqs,round(data_array(:,ii),3));
 end
 
 

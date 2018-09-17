@@ -1,0 +1,7 @@
+The ECE584 Microwave Calculator
+
+Written in 2018 for the Microwave Engineering course at the University of Massachusetts Amherst.
+The formulas in the software originate for Microwave Engineering by Professor David M. Pozar and from the lectures and notes of Professor Marinos N. Vouvakis.
+
+Written by N. Michael Sheridan of the University of Massachusetts Amherst and BAE Systems Information and Electronic Systems Inc.
+

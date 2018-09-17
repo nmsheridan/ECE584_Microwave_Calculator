@@ -22,7 +22,7 @@ function varargout = TLINE_GUI(varargin)
 
 % Edit the above text to modify the response to help TLINE_GUI
 
-% Last Modified by GUIDE v2.5 16-Sep-2018 14:05:40
+% Last Modified by GUIDE v2.5 16-Sep-2018 21:09:48
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -380,4 +380,33 @@ end
     
 if~isempty(err)
     warndlg(err);
+end
+
+
+% --------------------------------------------------------------------
+function settings_Callback(hObject, eventdata, handles)
+% hObject    handle to settings (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function preferences_Callback(hObject, eventdata, handles)
+% hObject    handle to preferences (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function about_Callback(hObject, eventdata, handles)
+% hObject    handle to about (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+info = fileread('About.txt');
+
+userInput = questdlg(info,'About','OK','OK');
+
+if(isempty(userInput))
+    return
 end

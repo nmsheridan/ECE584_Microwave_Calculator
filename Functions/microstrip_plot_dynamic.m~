@@ -26,12 +26,13 @@ end
 
 %% UI code & calculation prep
 
-x = linspace(f_start,f_stop,(f_stop-f_start));
+x = linspace(f_start,f_stop,10000);
+freqs = linspace(f_start,f_stop,10000);
 
 data_array = zeros(length(x),num);
 
 prompt = cell(num+1,1);
-legends = cell(num);
+legends = cell(num,1);
 prompt{1} = 'Length/Width Ratio for Plot';
 
 for ii=1:num
@@ -43,20 +44,25 @@ userInput = inputdlg(prompt,sprintf('Enter Dielectric Constants for %i Plot(s)',
 
 %% Calculations for impedance
 
-w = str2num(prompt{1});
+w = str2num(userInput{1});
 h = 1;
 
-for ii=1:(f_stop-f_start)
+bar = waitbar(0, 'Calculating...');
 
+for ii=1:length(x)
+
+    f = (ii*(f_stop-f_start)/length(x))+f_start;
+    
+    
     for jj=1:num
     
         er = str2double(userInput{jj});
         
-        [~,z0,ee,err] = calc_microstrip_z0(er,(f_start+ii),1,handles,1);
+        [~,z0,ee,err] = calc_microstrip_z0(er,w,h,handles,1);
         
         ft = sqrt(er/ee)*(z0/(2*(4*pi*1E-07)*h));
         
-        ereff = er - ((er-ee)/(1+((ii/ft)^2)));
+        ereff = er - ((er-ee)/(1+((f/ft)^2)));
         
         if(strcmp(opt,'er'))
             data_array(ii,jj) = ereff;
@@ -64,7 +70,7 @@ for ii=1:(f_stop-f_start)
         
         if(strcmp(opt,'z0'))
             weff = (120*pi*h)/(z0*sqrt(ee));
-            we = w + ((weff-w)/(1+((ii/ft)^2)));
+            we = w + ((weff-w)/(1+((f/ft)^2)));
             
             z0f = (120*pi*h)/(we*sqrt(ereff));
             
@@ -76,15 +82,20 @@ for ii=1:(f_stop-f_start)
             return
         end
         
-        legends{jj} = sprintf('er: %i', str2num(userInput{jj}));
+        legends{jj} = sprintf('er: %i', str2num(userInput{jj+1}));
         
     end
     
+    waitbar((ii/length(x)),bar,'Calculating...');
+    
 end
 
+close(bar)
 
 %% Plotting
 
+cla(handles.plotter, 'reset')
+set(handles.plotter, 'XScale', 'log')
 hold(handles.plotter,'on')
 
 for ii=1:num
@@ -98,7 +109,6 @@ if(strcmp(opt,'er'))
     xlabel('Frequency in Hz');
     legend(legends);
 end
-
 if(strcmp(opt,'z0'))
     title('Dynamic Characteristic Impedance');
     ylabel('Impedance in Ohms');
