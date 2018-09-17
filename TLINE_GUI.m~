@@ -85,11 +85,6 @@ prompt = {'Dielectric Constant (er)','Wire Diameter in cm (d)','Wire Distance in
 
 userInput = inputdlg(prompt,'Enter Paramaters for Two-Wire T-Line',3);
 
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
-
 [~,~,err] = calc_twoWire_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),handles);
     
@@ -108,11 +103,6 @@ function coax_z0_Callback(hObject, eventdata, handles)
 prompt = {'Dielectric Constant (er)','Inner Diameter in cm(d)','Outter Diameter in cm (D)'};
 
 userInput = inputdlg(prompt,'Enter Paramaters for Coaxial T-Line',3);
-
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
 
 [~,~,err] = calc_coax_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),handles);
@@ -133,13 +123,8 @@ prompt = {'Dielectric Constant (er)','Embedded Conductor Width in cm (w)',...
 
 userInput = inputdlg(prompt,'Enter Paramaters for Stripline',3);
 
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
-
 [~,~,err] = calc_stripline_z0(str2double(userInput{1}),str2double(userInput{2}),...
-        str2double(userInput{3}),handles,NaN);
+        str2double(userInput{3}),handles);
     
 if~isempty(err)
     warndlg(err);
@@ -157,13 +142,8 @@ prompt = {'Dielectric Constant (er)','Strip Width in cm (w)',...
 
 userInput = inputdlg(prompt,'Enter Paramaters for Microstrip Line',3);
 
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
-
 [~,~,~,err] = calc_microstrip_z0(str2double(userInput{1}),str2double(userInput{2}),...
-        str2double(userInput{3}),handles,NaN);
+        str2double(userInput{3}),handles);
     
 if~isempty(err)
     warndlg(err);
@@ -181,11 +161,6 @@ prompt = {'Dielectric Constant (er)','Characteristic Impedence (Zo)',...
     'Embedded Conductor Width in cm (w)','Ground Plane Distance in cm (b)'};
 
 userInput = inputdlg(prompt,'Enter Paramaters for Stripline',4);
-
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
 
 [handles,w,b,diff,err] = design_stripline(str2double(userInput{1}),...
     str2double(userInput{2}),str2double(userInput{3}),str2double(userInput{4}),handles);
@@ -208,11 +183,6 @@ prompt = {'Dielectric Constant (er)','Characteristic Impedence (Zo)',...
     'Conductor Width in cm (w)','Ground Plane Distance in cm (b)'};
 
 userInput = inputdlg(prompt,'Enter Paramaters for Microstrip Tranmission Line',4);
-
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
 
 [handles,w,b,diff,err] = design_microstrip(str2double(userInput{1}),...
     str2double(userInput{2}),str2double(userInput{3}),str2double(userInput{4}),handles);
@@ -270,9 +240,6 @@ handles.materials = readtable('Materials.csv');
 guidata(hObject, handles);
 
 
-
-%% Plot Tools Menu Options
-
 % --------------------------------------------------------------------
 function plot_tools_Callback(hObject, eventdata, handles)
 % hObject    handle to plot_tools (see GCBO)
@@ -293,23 +260,6 @@ function microstrip_plot_er_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-prompt = {'Staring w/b ratio','Ending w/b ratio','How many Dielectrics do you want to Plot?'};
-
-dims = [1 35];
-userInput = inputdlg(prompt,'Enter Plot Settings',dims);
-
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
-
-[~,~,err] = microstrip_plot_static_er(handles,str2double(userInput{1}),str2double(userInput{2}),...
-        str2double(userInput{3}));
-    
-if~isempty(err)
-    warndlg(err);
-end
-
 
 % --------------------------------------------------------------------
 function microstrip_plot_z0_Callback(hObject, eventdata, handles)
@@ -317,18 +267,12 @@ function microstrip_plot_z0_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-prompt = {'Staring w/b ratio','Ending w/b ratio','How many Dielectrics do you want to Plot?'};
+prompt = {'How many Dielectrics do you want to Plot?','Staring w/b ratio','Ending w/b ratio'};
 
-dims = [1 35];
-userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+userInput = inputdlg(prompt,'Enter Number of Dielectrics',3);
 
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
-
-[~,~,err] = microstrip_plot_static_z0(handles,str2double(userInput{1}),str2double(userInput{2}),...
-        str2double(userInput{3}));
+[~,~,~,err] = calc_microstrip_z0(str2double(userInput{1}),str2double(userInput{2}),...
+        str2double(userInput{3}),handles);
     
 if~isempty(err)
     warndlg(err);
@@ -341,43 +285,9 @@ function microstrip_plot_z0f_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-prompt = {'Staring Frequency','Ending Frequency','How many Dielectrics do you want to Plot?'};
-
-dims = [1 35];
-userInput = inputdlg(prompt,'Enter Plot Settings',dims);
-
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
-
-[~,~,err] = microstrip_plot_dynamic(handles,str2double(userInput{1}),str2double(userInput{2}),...
-        str2double(userInput{3}),'z0');
-    
-if~isempty(err)
-    warndlg(err);
-end
-
 
 % --------------------------------------------------------------------
 function microstrip_plot_erf_Callback(hObject, eventdata, handles)
 % hObject    handle to microstrip_plot_erf (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-prompt = {'Staring Frequency','Ending Frequency','How many Dielectrics do you want to Plot?'};
-
-dims = [1 35];
-userInput = inputdlg(prompt,'Enter Plot Settings',dims);
-
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
-
-[~,~,err] = microstrip_plot_dynamic(handles,str2double(userInput{1}),str2double(userInput{2}),...
-        str2double(userInput{3}),'er');
-    
-if~isempty(err)
-    warndlg(err);
-end
