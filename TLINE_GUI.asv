@@ -435,9 +435,16 @@ if(isempty(userInput))
     return
 end
 
-[~,~,err] = stripline_plot_static_z0(handles,str2double(userInput{1}),str2double(userInput{2}),...
+[~,~,err] = microstrip_plot_static_z0(handles,str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}));
     
 if~isempty(err)
     warndlg(err);
 end
+
+
+% --------------------------------------------------------------------
+function stripline_plot_er_Callback(hObject, eventdata, handles)
+% hObject    handle to stripline_plot_er (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

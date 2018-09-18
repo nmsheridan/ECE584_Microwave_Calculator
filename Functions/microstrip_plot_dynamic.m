@@ -46,8 +46,8 @@ userInput = inputdlg(prompt,sprintf('Enter Dielectric Constants for %i Plot(s)',
 
 %% Calculations for impedance
 
-w = str2num(userInput{1});
-h = 1;
+w = (str2num(userInput{1}))*(1E-3);
+h = 1E-3;
 
 bar = waitbar(0, 'Calculating...');
 
@@ -64,10 +64,18 @@ for ii=1:length(x)
         
         [~,z0,ee,err] = calc_microstrip_z0(er,w,h,handles,1);
         
-        ft = sqrt(er/ee)*(z0/(2*(4*pi*1E-07)*h));
+%         ft = sqrt(er/ee)*(z0/(2*(4*pi*1E-07)*h));
+%         
+%         ereff = er - ((er-ee)/(1+((f/ft)^2)));
         
-        ereff = er - ((er-ee)/(1+((f/ft)^2)));
+        fp = z0/(8*pi*h);
         
+        g = 0.6 + 0.009*z0;
+        
+        Gf = g*((f/fp)^2);
+        
+        ereff = er - ((er-ee)/(1+Gf));
+
         if(strcmp(opt,'er'))
             data_array(ii,jj) = ereff;
         end
