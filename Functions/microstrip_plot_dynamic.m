@@ -64,7 +64,7 @@ for ii=1:length(x)
         
         [~,z0,ee,err] = calc_microstrip_z0(er,w,h,handles,1);
         
-%         ft = sqrt(er/ee)*(z0/(2*(4*pi*1E-07)*h));
+         
 %         
 %         ereff = er - ((er-ee)/(1+((f/ft)^2)));
         
@@ -81,6 +81,8 @@ for ii=1:length(x)
         end
         
         if(strcmp(opt,'z0'))
+            ft = sqrt(er/ee)*(z0/(2*(4*pi*1E-07)*h));
+            
             weff = (120*pi*h)/(z0*sqrt(ee));
             we = w + ((weff-w)/(1+((f/ft)^2)));
             
