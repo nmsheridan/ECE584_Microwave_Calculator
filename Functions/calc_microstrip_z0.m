@@ -32,6 +32,6 @@ if(x>=1)
 end
 
 if(isnan(bypass))
-    answer = questdlg(sprintf('Characterstic Impedence: %d Ohms\n(Using Schneider Approximation)'...
-        ,z0),'Result','OK','OK');
+    answer = questdlg(sprintf('Characterstic Impedence: %d Ohms\n(Using Schneider Approximation)\n\nEffective Dielectric Constant: %i'...
+        ,z0,ee),'Result','OK','OK');
 end

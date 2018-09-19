@@ -83,7 +83,7 @@ function twoWire_Z0_Callback(hObject, eventdata, handles)
 
 prompt = {'Dielectric Constant (er)','Wire Diameter in cm (d)','Wire Distance in cm (D)'};
 
-userInput = inputdlg(prompt,'Enter Paramaters for Two-Wire T-Line',3);
+userInput = inputdlg(prompt,'Enter Paramaters for Two-Wire T-Line',[1 35]);
 
 if(isempty(userInput))
     warndlg('Cancelled!');
@@ -107,7 +107,7 @@ function coax_z0_Callback(hObject, eventdata, handles)
 
 prompt = {'Dielectric Constant (er)','Inner Diameter in cm(d)','Outter Diameter in cm (D)'};
 
-userInput = inputdlg(prompt,'Enter Paramaters for Coaxial T-Line',3);
+userInput = inputdlg(prompt,'Enter Paramaters for Coaxial T-Line',[1 35]);
 
 if(isempty(userInput))
     warndlg('Cancelled!');
@@ -131,7 +131,7 @@ function stripline_z0_Callback(hObject, eventdata, handles)
 prompt = {'Dielectric Constant (er)','Embedded Conductor Width in cm (w)',...
     'Ground Plane Distance in cm (b)'};
 
-userInput = inputdlg(prompt,'Enter Paramaters for Stripline',3);
+userInput = inputdlg(prompt,'Enter Paramaters for Stripline',[1 35]);
 
 if(isempty(userInput))
     warndlg('Cancelled!');
@@ -155,7 +155,7 @@ function microstrip_z0_Callback(hObject, eventdata, handles)
 prompt = {'Dielectric Constant (er)','Strip Width in cm (w)',...
     'Conductor Distance in cm (b)'};
 
-userInput = inputdlg(prompt,'Enter Paramaters for Microstrip Line',3);
+userInput = inputdlg(prompt,'Enter Paramaters for Microstrip Line',[1 35]);
 
 if(isempty(userInput))
     warndlg('Cancelled!');
@@ -180,7 +180,7 @@ function design_stripline_Callback(hObject, eventdata, handles)
 prompt = {'Dielectric Constant (er)','Characteristic Impedence (Zo)',...
     'Embedded Conductor Width in cm (w)','Ground Plane Distance in cm (b)'};
 
-userInput = inputdlg(prompt,'Enter Paramaters for Stripline',4);
+userInput = inputdlg(prompt,'Enter Paramaters for Stripline',[1 35]);
 
 if(isempty(userInput))
     warndlg('Cancelled!');
@@ -384,6 +384,30 @@ end
 
 
 % --------------------------------------------------------------------
+function stripline_plot_z0_Callback(hObject, eventdata, handles)
+% hObject    handle to stripline_plot_z0 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring w/b ratio','Ending w/b ratio','How many Dielectrics do you want to Plot?'};
+
+dims = [1 35];
+userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,err] = stripline_plot_static_z0(handles,str2double(userInput{1}),str2double(userInput{2}),...
+        str2double(userInput{3}));
+    
+if~isempty(err)
+    warndlg(err);
+end
+
+
+% --------------------------------------------------------------------
 function settings_Callback(hObject, eventdata, handles)
 % hObject    handle to settings (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -417,27 +441,3 @@ function stripline_Callback(hObject, eventdata, handles)
 % hObject    handle to stripline (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-
-% --------------------------------------------------------------------
-function stripline_plot_z0_Callback(hObject, eventdata, handles)
-% hObject    handle to stripline_plot_z0 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-prompt = {'Staring w/b ratio','Ending w/b ratio','How many Dielectrics do you want to Plot?'};
-
-dims = [1 35];
-userInput = inputdlg(prompt,'Enter Plot Settings',dims);
-
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
-
-[~,~,err] = stripline_plot_static_z0(handles,str2double(userInput{1}),str2double(userInput{2}),...
-        str2double(userInput{3}));
-    
-if~isempty(err)
-    warndlg(err);
-end
