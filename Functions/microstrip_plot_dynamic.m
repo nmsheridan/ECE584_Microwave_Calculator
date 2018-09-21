@@ -23,22 +23,25 @@ if((num==0)||(isnan(num)))
     num = 1;
 end
 
+f_start = f_start*(1e6);  %user input is entered in MHz
+f_stop = f_stop*(1e6);
 
 %% UI code & calculation prep
 
 num = round(num);
 
-x = linspace(0,10000,10000);
-freqs = linspace(f_start,f_stop,10000);
+x = linspace(0,10000,10001);
+freqs = linspace(f_start,f_stop,10001);
 
 data_array = zeros(length(x),num);
 
-prompt = cell(num+1,1);
+prompt = cell(num+2,1);
 legends = cell(num,1);
-prompt{1} = 'Length/Width Ratio for Plot';
+prompt{1} = 'Conductor Width for Plot [mm]';
+prompt{2} = 'Dielectric Height for Plot [mm]';
 
 for ii=1:num
-    prompt{ii+1} = sprintf('Dielectric Constant (er) for Plot %i',ii);
+    prompt{ii+2} = sprintf('Dielectric Constant (er) for Plot %i',ii);
 end
 
 userInput = inputdlg(prompt,sprintf('Enter Dielectric Constants for %i Plot(s)',num),[1 35]);
@@ -47,7 +50,7 @@ userInput = inputdlg(prompt,sprintf('Enter Dielectric Constants for %i Plot(s)',
 %% Calculations for impedance
 
 w = (str2num(userInput{1}))*(1E-3);
-h = 1E-3;
+h = (str2num(userInput{2}))*(1E-3);
 
 bar = waitbar(0, 'Calculating...');
 
@@ -60,28 +63,28 @@ for ii=1:length(x)
     
     for jj=1:num
     
-        er = str2double(userInput{jj+1});
+        er = str2double(userInput{jj+2});
         
         [~,z0,ee,err] = calc_microstrip_z0(er,w,h,handles,1);
         
          
+         ft = sqrt(er/ee)*z0/(2*(4*pi*1e-07)*h);
+         ereff = er - ((er-ee)/(1+((f/ft)^2)));
+        
+%         fp = z0/(8*pi*h);
 %         
-%         ereff = er - ((er-ee)/(1+((f/ft)^2)));
-        
-        fp = z0/(8*pi*h);
-        
-        g = 0.6 + 0.009*z0;
-        
-        Gf = g*((f/fp)^2);
-        
-        ereff = er - ((er-ee)/(1+Gf));
+%         g = 0.6 + 0.009*z0;
+%         
+%         Gf = g*((f/fp)^2);
+%         
+%         ereff = er - ((er-ee)/(1+Gf));
 
         if(strcmp(opt,'er'))
             data_array(ii,jj) = ereff;
         end
         
         if(strcmp(opt,'z0'))
-            ft = sqrt(er/ee)*(z0/(2*(4*pi*1E-07)*h));
+%            ft = sqrt(er/ee)*(z0/(2*(4*pi*1E-07)*h));
             
             weff = (120*pi*h)/(z0*sqrt(ee));
             we = w + ((weff-w)/(1+((f/ft)^2)));
@@ -96,7 +99,7 @@ for ii=1:length(x)
             return
         end
         
-        legends{jj} = sprintf('er: %i', str2num(userInput{jj+1}));
+        legends{jj} = sprintf('er: %.1f', str2num(userInput{jj+2}));
         
     end
     
@@ -109,26 +112,26 @@ close(bar)
 %% Plotting
 
 cla(handles.plotter, 'reset')
-set(handles.plotter, 'XScale', 'log')
-axis(handles.plotter,[f_start f_stop 0 100])
+set(handles.plotter, 'XScale', 'lin')
+axis(handles.plotter,[(f_start/1e6) (f_stop/1e6) 0 100])
 axis 'auto y'
 hold(handles.plotter,'on')
 
 for ii=1:num
-   p = plot(handles.plotter,freqs,round(data_array(:,ii),3));
+   p = plot(handles.plotter,(freqs/1e6),round(data_array(:,ii),3));
 end
 
 
 if(strcmp(opt,'er'))
     title('Dynamic Equivalent Dielectric Constant');
     ylabel('Dielectric Constant');
-    xlabel('Frequency in Hz');
+    xlabel('Frequency in MHz');
     legend(legends);
 end
 if(strcmp(opt,'z0'))
     title('Dynamic Characteristic Impedance');
     ylabel('Impedance in Ohms');
-    xlabel('Frequency in Hz');
+    xlabel('Frequency in MHz');
     legend(legends);
 end
 
