@@ -30,8 +30,8 @@ f_stop = f_stop*(1e6);
 
 num = round(num);
 
-x = linspace(0,10000,10001);
-freqs = linspace(f_start,f_stop,10001);
+x = linspace(0,handles.plotPoints,handles.plotPoints);
+freqs = linspace(f_start,f_stop,handles.plotPoints);
 
 data_array = zeros(length(x),num);
 
@@ -65,7 +65,7 @@ for ii=1:length(x)
     
         er = str2double(userInput{jj+2});
         
-        [~,z0,ee,err] = calc_microstrip_z0(er,w,h,handles,1);
+        [~,z0,ee,err] = calc_microstrip_z0(er,w,h,NaN,handles,1);
         
          
          ft = sqrt(er/ee)*z0/(2*(4*pi*1e-07)*h);

@@ -3,7 +3,6 @@ function [handles, p, err] = stripline_plot_static_z0(handles,x_start,x_stop,num
 % N Michael Sheridan
 % September 2018
 % Plots one or more stripline static characteristc impedances
-% This code contains part of my solution to Problem 3 of Homework 1!
 
 
 %% Some wrappers to prevent mathematical inconsistancies

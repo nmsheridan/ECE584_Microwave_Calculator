@@ -22,7 +22,7 @@ function varargout = TLINE_GUI(varargin)
 
 % Edit the above text to modify the response to help TLINE_GUI
 
-% Last Modified by GUIDE v2.5 17-Sep-2018 21:41:53
+% Last Modified by GUIDE v2.5 21-Sep-2018 10:40:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,6 +54,9 @@ function TLINE_GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for TLINE_GUI
 handles.output = hObject;
+
+% Sets some user defaults for plot tools
+handles.plotPoints = 10001;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -155,7 +158,7 @@ function microstrip_z0_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 prompt = {'Dielectric Constant (er)','Strip Width in mm (w)',...
-    'Conductor Distance in mm (b)'};
+    'Conductor Distance in mm (b)','Frequency in MHz (f)'};
 
 userInput = inputdlg(prompt,'Enter Paramaters for Microstrip Line',[1 35]);
 
@@ -165,7 +168,7 @@ if(isempty(userInput))
 end
 
 [~,~,~,err] = calc_microstrip_z0(str2double(userInput{1}),str2double(userInput{2}),...
-        str2double(userInput{3}),handles,NaN);
+        str2double(userInput{3}),str2double(userInput{4}),handles,NaN);
     
 if~isempty(err)
     warndlg(err);
@@ -421,6 +424,26 @@ function preferences_Callback(hObject, eventdata, handles)
 % hObject    handle to preferences (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+prompt{1} = 'Number of points for disperion plots';
+
+preferences = inputdlg(prompt,'User Preferences', [1 35]);
+
+if(isempty(preferences))
+    warndlg('Canceled!');
+    return
+end
+
+if((str2num(preferences{1})<100)||(str2num(preferences{1})>100e6))
+    warndlg('Plot points out of acceptable bounds!');
+    return
+end
+
+handles.plotPoints = str2num(preferences{1});
+
+guidata(hObject, handles);
+
+
 
 
 % --------------------------------------------------------------------
