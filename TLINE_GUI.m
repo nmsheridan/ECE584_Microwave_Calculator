@@ -22,7 +22,7 @@ function varargout = TLINE_GUI(varargin)
 
 % Edit the above text to modify the response to help TLINE_GUI
 
-% Last Modified by GUIDE v2.5 21-Sep-2018 10:40:06
+% Last Modified by GUIDE v2.5 26-Sep-2018 09:45:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,6 +58,14 @@ handles.output = hObject;
 % Sets some user defaults for plot tools
 handles.plotPoints = 10001;
 
+% This will allow the parameters of a transmission line to be saved to
+% memory for reflection/power delivered calculations
+handles.z0 = cell(2);
+handles.L = cell(2);
+handles.C = cell(2);
+handles.R = cell(2);
+handles.G = cell(2);
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -84,22 +92,29 @@ function twoWire_Z0_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+%User prompts to be used in inputdlg
 prompt = {'Dielectric Constant (er)','Wire Diameter in mm (d)',...
     'Wire Distance in mm (D)'};
 
+%Prompts the user for the permitivity, wire diameter and wire distance
 userInput = inputdlg(prompt,'Enter Paramaters for Two-Wire T-Line',[1 35]);
 
+%Needed in case the user closes the dialog window
 if(isempty(userInput))
     warndlg('Cancelled!');
     return
 end
 
+%Function call to the calc_twoWire_z0 function
 [~,~,err] = calc_twoWire_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),handles);
-    
+
+%Prints-out error from calculator function (if there is one)
 if~isempty(err)
     warndlg(err);
 end
+
+%All TLine z0 calculators have the same UI code associated with them
 
 
 
@@ -167,7 +182,7 @@ if(isempty(userInput))
     return
 end
 
-[~,~,~,err] = calc_microstrip_z0(str2double(userInput{1}),str2double(userInput{2}),...
+[~,~,~,~,~,~,~,~,~,err] = calc_microstrip_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),str2double(userInput{4}),handles,NaN);
     
 if~isempty(err)
@@ -182,19 +197,26 @@ function design_stripline_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+%User prompts for designers
 prompt = {'Dielectric Constant (er)','Characteristic Impedence (Zo)',...
     'Embedded Conductor Width in mm (w)','Ground Plane Distance in mm (b)'};
 
+%Dialog box for use input
 userInput = inputdlg(prompt,'Enter Paramaters for Stripline',[1 35]);
 
+%Needed in case the user closes the dialog window
 if(isempty(userInput))
     warndlg('Cancelled!');
     return
 end
 
+%Function call to designer function; transmission line dimensions are
+%returned
 [handles,w,b,diff,err] = design_stripline(str2double(userInput{1}),...
     str2double(userInput{2}),str2double(userInput{3}),str2double(userInput{4}),handles);
-    
+
+%Displays warning or displays the results returned from the designer
+%function
 if~isempty(err)
     warndlg(err);
 else
@@ -212,7 +234,7 @@ function design_microstrip_Callback(hObject, eventdata, handles)
 prompt = {'Dielectric Constant (er)','Characteristic Impedence (Zo)',...
     'Conductor Width in mm (w)','Ground Plane Distance in mm (b)'};
 
-userInput = inputdlg(prompt,'Enter Paramaters for Microstrip Tranmission Line',4);
+userInput = inputdlg(prompt,'Enter Paramaters for Microstrip Tranmission Line',[1 35]);
 
 if(isempty(userInput))
     warndlg('Cancelled!');
@@ -244,10 +266,10 @@ ii = 1;
 while((~strcmp(handles.materials{ii,1},selection))&&(ii<height(handles.materials)))
    ii = ii + 1; 
 end
-if(ii>height(handles.materials))
-    set(handles.info_name, selection, info_name);
-    set(handles.info_er, 'UNKNOWN', info_er);
-    set(handles.info_tand, 'UNKNOWN', info_tand);
+if(ii==(height(handles.materials)+1))
+    set(handles.info_name, 'String', selection);
+    set(handles.info_er, 'String', 'UNKNOWN');
+    set(handles.info_tand, 'String', 'UNKNOWN');
     ii = height(handles.materials) + 1;
 else
     set(handles.info_name, 'String', handles.materials{ii,1});
@@ -270,6 +292,8 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+%This reads in all the material data from a CSV file and saves it to
+%handles
 handles.materials = readtable('Materials.csv');
 
 guidata(hObject, handles);
@@ -298,19 +322,24 @@ function microstrip_plot_er_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+%User prompts for plotter
 prompt = {'Staring w/b ratio','Ending w/b ratio','How many Dielectrics do you want to Plot?'};
 
-dims = [1 35];
-userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+%Prompts user for plot settings using the above prompts
+userInput = inputdlg(prompt,'Enter Plot Settings', [1 35]);
 
+%Needed if user closes dialog window
 if(isempty(userInput))
     warndlg('Cancelled!');
     return
 end
 
+
+%Function call to plotter tool
 [~,~,err] = microstrip_plot_static_er(handles,str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}));
-    
+
+%Prints-out errors if applicable
 if~isempty(err)
     warndlg(err);
 end
@@ -466,3 +495,51 @@ function stripline_Callback(hObject, eventdata, handles)
 % hObject    handle to stripline (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function microstrip_plot_velocity_Callback(hObject, eventdata, handles)
+% hObject    handle to microstrip_plot_velocity (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring Frequency [MHz]','Ending Frequency [MHz]','How many Dielectrics do you want to Plot?'};
+
+dims = [1 35];
+userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,err] = microstrip_plot_dynamic(handles,str2double(userInput{1}),str2double(userInput{2}),...
+        str2double(userInput{3}),'velocity');
+    
+if~isempty(err)
+    warndlg(err);
+end
+
+
+% --------------------------------------------------------------------
+function microstrip_plot_delay_Callback(hObject, eventdata, handles)
+% hObject    handle to microstrip_plot_delay (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring Frequency [MHz]','Ending Frequency [MHz]','How many Dielectrics do you want to Plot?'};
+
+dims = [1 35];
+userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,err] = microstrip_plot_dynamic(handles,str2double(userInput{1}),str2double(userInput{2}),...
+        str2double(userInput{3}),'delay');
+    
+if~isempty(err)
+    warndlg(err);
+end

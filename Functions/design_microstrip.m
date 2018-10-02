@@ -50,6 +50,30 @@ if(isnan(b))
 end
 
 %% Computing diff
-[~,z0_exact,~,err] = calc_microstrip_z0(er,w,b,handles,1);
+[~,z0_exact,~,~,~,~,~,~,~,err] = calc_microstrip_z0(er,w,b,NaN,handles,1);
 diff = ((z0-z0_exact)/z0_exact)*100;
+
+% %% Save parameters to memory for future calculations
+% input = questdlg('Save Transmission Line parameters to memory?','Save',...
+%     'Save Slot 1','Save Slot 2','No','No');
+% if(strcmp(input,'Save Slot 1'))
+%     
+%     handles.z0{1} = z0_exact;
+%     handles.L{1} = L;
+%     handles.C{1} = C;
+%     
+%     questdlg('Transmission Line Parameters saved to Slot 1!','Save','OK','OK');
+%     
+% end
+% 
+% if(strcmp(input,'Save Slot 2'))
+%     
+%     handles.z0{2} = z0_exact;
+%     handles.L{2} = L;
+%     handles.C{2} = C;
+%     
+%     questdlg('Transmission Line Parameters saved to Slot 2!','Save','OK','OK');
+%     
+% end
+
 

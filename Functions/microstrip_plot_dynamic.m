@@ -46,6 +46,11 @@ end
 
 userInput = inputdlg(prompt,sprintf('Enter Dielectric Constants for %i Plot(s)',num),[1 35]);
 
+if(isempty(userInput))
+    warndlg('Cancelled!')
+    return
+end
+
 
 %% Calculations for impedance
 
@@ -53,6 +58,15 @@ w = (str2num(userInput{1}))*(1E-3);
 h = (str2num(userInput{2}))*(1E-3);
 
 bar = waitbar(0, 'Calculating...');
+
+if(strcmp(opt,'delay'))
+   l = inputdlg('Enter length of Transmission Line in mm','Length',[1 35]);
+   if(isempty(1))
+       warndlg('Cancelled!');
+       return
+   end
+   l = str2double(l)/1000;
+end
 
 for ii=1:length(x)
 
@@ -65,13 +79,13 @@ for ii=1:length(x)
     
         er = str2double(userInput{jj+2});
         
-        [~,z0,ee,err] = calc_microstrip_z0(er,w,h,NaN,handles,1);
+        [~,z0,z0air,ee,ereff,~,~,~,~,err] = calc_microstrip_z0(er,w,h,(f/1e6),handles,1);
         
          
-         ft = sqrt(er/ee)*z0/(2*(4*pi*1e-07)*h);
-         ereff = er - ((er-ee)/(1+((f/ft)^2)));
+%         ft = sqrt(er/ee)*z0/(2*(4*pi*1e-07)*h);
+%         ereff = er - ((er-ee)/(1+((f/ft)^2)));
         
-%         fp = z0/(8*pi*h);
+%         fp = z0/(8*pi*h);  Pozar's equations
 %         
 %         g = 0.6 + 0.009*z0;
 %         
@@ -84,14 +98,53 @@ for ii=1:length(x)
         end
         
         if(strcmp(opt,'z0'))
+            data_array(ii,jj) = z0;
 %            ft = sqrt(er/ee)*(z0/(2*(4*pi*1E-07)*h));
             
-            weff = (120*pi*h)/(z0*sqrt(ee));
-            we = w + ((weff-w)/(1+((f/ft)^2)));
+%            weff = (120*pi*h)/(z0*sqrt(ee));
+%            we = w + ((weff-w)/(1+((f/ft)^2)));
             
-            z0f = (120*pi*h)/(we*sqrt(ereff));
+%            data_array(ii,jj) = (120*pi*h)/(we*sqrt(ereff));
+        end
+        
+        if(strcmp(opt,'velocity'))
             
-            data_array(ii,jj) = z0f;
+%             x = w/h;
+%             
+%             if(x<1)
+%                 z0air = (60)*log((8/x)+0.25*x);
+%             end
+%             
+%             if(x>=1)
+%                 z0air = (120*pi)/(x+1.393+0.667*log(x+1.444));
+%             end
+%             
+%             weff = (120*pi*h)/(z0*sqrt(ee));
+%             we = w + ((weff-w)/(1+((f/ft)^2)));
+%             
+%             z0f = (120*pi*h)/(we*sqrt(ereff));
+            
+            data_array(ii,jj) = (3e08)*z0/z0air; 
+        end
+        
+        if(strcmp(opt,'delay'))
+            
+%             x = w/h;
+%             
+%             if(x<1)
+%                 z0air = (60)*log((8/x)+0.25*x);
+%             end
+%             
+%             if(x>=1)
+%                 z0air = (120*pi)/(x+1.393+0.667*log(x+1.444));
+%             end
+%             
+%             weff = (120*pi*h)/(z0*sqrt(ee));
+%             we = w + ((weff-w)/(1+((f/ft)^2)));
+%             
+%             z0f = (120*pi*h)/(we*sqrt(ereff));
+            
+            data_array(ii,jj) = (1e12*l)/(3e08)*z0/z0air; 
         end
         
         if~isempty(err)
@@ -131,6 +184,18 @@ end
 if(strcmp(opt,'z0'))
     title('Dynamic Characteristic Impedance');
     ylabel('Impedance in Ohms');
+    xlabel('Frequency in MHz');
+    legend(legends);
+end
+if(strcmp(opt,'velocity'))
+    title('Group Velocity');
+    ylabel('Velocity in m/s');
+    xlabel('Frequency in MHz');
+    legend(legends);
+end
+if(strcmp(opt,'delay'))
+    title('Group Delay');
+    ylabel('Delay in ps');
     xlabel('Frequency in MHz');
     legend(legends);
 end
