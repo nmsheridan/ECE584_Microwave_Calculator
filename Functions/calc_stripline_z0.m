@@ -1,4 +1,4 @@
-function [handles,z0,err] = calc_stripline_z0(er,w,b,handles,bypass)
+function [handles,z0,z0air,L,C,err] = calc_stripline_z0(er,w,b,handles,bypass)
 
 % N Michael Sheridan
 % September 2018

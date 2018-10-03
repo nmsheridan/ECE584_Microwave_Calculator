@@ -4,6 +4,20 @@ function [handles,z0,z0air,ee,ereff,L,C,B,Vp,err] = calc_microstrip_z0(er,w,b,f,
 % September 2018
 % Evaluates the characteristic impedence for microstrip transmission line
 % with a infinitely thin conductor using Schneider approximation
+% 
+% The inputs to this function are as follows:
+% er -> dielectric permitivity (at DC)
+% w -> conductor width
+% b -> distance between the conductor and groundplane
+% f -> operating frequency (if you want to use the dispersive model)
+% bypass -> set to a number (not NaN) if you don't want your results to
+% show in a popup window
+% 
+% L and C and PER UNIT LENGTH
+% ereff is the frequency-dependent permitivity
+% err is error message (NOT permitivity)
+% Anyone who has been paying attention in class should know what the rest
+% of the outputs are
 
 err = '';
 if(isnan(er)||isnan(w)||isnan(b))
@@ -50,6 +64,29 @@ if(isnan(f))
         
         Answer = questdlg(sprintf('Results:\n\n%s\n%s\n%s\n%s\n%s\n', ...
             Zans, ZAirans, Lans, Cans, Eans),'Result','OK','OK');
+        
+        %% Save parameters to memory for future calculations
+        input = questdlg('Save Transmission Line parameters to memory?','Save',...
+            'Save Slot 1','Save Slot 2','No','No');
+        if(strcmp(input,'Save Slot 1'))
+            
+            handles.z0{1} = z0;
+            handles.L{1} = L;
+            handles.C{1} = C;
+            
+            questdlg('Transmission Line Parameters saved to Slot 1!','Save','OK','OK');
+            
+        end
+        
+        if(strcmp(input,'Save Slot 2'))
+            
+            handles.z0{2} = z0;
+            handles.L{2} = L;
+            handles.C{2} = C;
+            
+            questdlg('Transmission Line Parameters saved to Slot 2!','Save','OK','OK');
+            
+        end
     end
 
 end
@@ -80,29 +117,28 @@ if(~isnan(f))
         Answer = questdlg(sprintf('Results:\n\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n', ...
             Zans, ZAirans, Eans, Ereffans, Vans, Bans, Lans, Cans),'Result','OK','OK');
         
+        %% Save parameters to memory for future calculations
+        input = questdlg('Save Transmission Line parameters to memory?','Save',...
+            'Save Slot 1','Save Slot 2','No','No');
+        if(strcmp(input,'Save Slot 1'))
+            
+            handles.z0{1} = z0;
+            handles.L{1} = L;
+            handles.C{1} = C;
+            
+            questdlg('Transmission Line Parameters saved to Slot 1!','Save','OK','OK');
+            
+        end
+        
+        if(strcmp(input,'Save Slot 2'))
+            
+            handles.z0{2} = z0;
+            handles.L{2} = L;
+            handles.C{2} = C;
+            
+            questdlg('Transmission Line Parameters saved to Slot 2!','Save','OK','OK');
+            
+        end
     end
-    
-end
-
-%% Save parameters to memory for future calculations
-input = questdlg('Save Transmission Line parameters to memory?','Save',...
-    'Save Slot 1','Save Slot 2','No','No');
-if(strcmp(input,'Save Slot 1'))
-    
-    handles.z0{1} = z0;
-    handles.L{1} = L;
-    handles.C{1} = C;
-    
-    questdlg('Transmission Line Parameters saved to Slot 1!','Save','OK','OK');
-    
-end
-
-if(strcmp(input,'Save Slot 2'))
-    
-    handles.z0{2} = z0;
-    handles.L{2} = L;
-    handles.C{2} = C;
-    
-    questdlg('Transmission Line Parameters saved to Slot 2!','Save','OK','OK');
     
 end

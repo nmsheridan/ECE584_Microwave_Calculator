@@ -21,5 +21,39 @@ if(x<=1)
 end
 
 z0 = (120/sqrt(er))*log(x + sqrt((x^2)-1));
+z0air = 120*log(x + sqrt((x^2)-1));
 
-questdlg(sprintf('Characterstic Impedence: %d Ohms',z0),'Result','OK','OK');
+L = z0air*(4e-07)/(120);
+C = er*(8.85e-12)*120*pi/z0air;
+
+Zans = sprintf('Characteristic Impedance (z0): %.4f [Ohms]',z0);
+ZAirans = sprintf('Characteristic Impedance in Air (z0 Air): %.4f [Ohms]',z0air);
+Lans = sprintf('Inductance per Unit Length (L`): %i [H/m]', L);
+Cans = sprintf('Capactiance per Unit Length (C`): %i [F/m]', C);
+Eans = sprintf('Effective Permivity at DC (er): %.4f', ee);
+
+Answer = questdlg(sprintf('Results:\n\n%s\n%s\n%s\n%s\n%s\n', ...
+    Zans, ZAirans, Lans, Cans, Eans),'Result','OK','OK');
+
+%% Save parameters to memory for future calculations
+input = questdlg('Save Transmission Line parameters to memory?','Save',...
+    'Save Slot 1','Save Slot 2','No','No');
+if(strcmp(input,'Save Slot 1'))
+    
+    handles.z0{1} = z0;
+    handles.L{1} = L;
+    handles.C{1} = C;
+    
+    questdlg('Transmission Line Parameters saved to Slot 1!','Save','OK','OK');
+    
+end
+
+if(strcmp(input,'Save Slot 2'))
+    
+    handles.z0{2} = z0;
+    handles.L{2} = L;
+    handles.C{2} = C;
+    
+    questdlg('Transmission Line Parameters saved to Slot 2!','Save','OK','OK');
+    
+end

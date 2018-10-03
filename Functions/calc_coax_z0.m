@@ -33,3 +33,26 @@ Eans = sprintf('Effective Permivity at DC (er): %.4f', ee);
 
 Answer = questdlg(sprintf('Results:\n\n%s\n%s\n%s\n%s\n%s\n', ...
     Zans, ZAirans, Lans, Cans, Eans),'Result','OK','OK');
+
+%% Save parameters to memory for future calculations
+input = questdlg('Save Transmission Line parameters to memory?','Save',...
+    'Save Slot 1','Save Slot 2','No','No');
+if(strcmp(input,'Save Slot 1'))
+    
+    handles.z0{1} = z0;
+    handles.L{1} = L;
+    handles.C{1} = C;
+    
+    questdlg('Transmission Line Parameters saved to Slot 1!','Save','OK','OK');
+    
+end
+
+if(strcmp(input,'Save Slot 2'))
+    
+    handles.z0{2} = z0;
+    handles.L{2} = L;
+    handles.C{2} = C;
+    
+    questdlg('Transmission Line Parameters saved to Slot 2!','Save','OK','OK');
+    
+end

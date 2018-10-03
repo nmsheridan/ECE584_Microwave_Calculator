@@ -4,7 +4,13 @@ function [handles, p, err] = microstrip_plot_dynamic(handles,f_start,f_stop,num,
 % September 2018
 % Plots one or more microstrip static characteristc impedances
 % This code contains part of my solution to Problem 3 of Homework 1!
-
+% 
+% Frequencies are entered in MHz!
+% 'num' is the number of dielectrics you want to plot
+% 'opt' lets you tell the function which quanitity you want to plot
+%
+% In almost all situations, the outputs of this function don't really
+% matter
 
 %% Some wrappers to prevent mathematical inconsistancies
 if(f_start>f_stop)
@@ -72,26 +78,11 @@ for ii=1:length(x)
 
     f = freqs(ii);
     
-%     f = ((ii-1)*(f_stop-f_start)/length(x))+f_start;
-%     freqs(ii) = f;
-    
     for jj=1:num
     
         er = str2double(userInput{jj+2});
         
-        [~,z0,z0air,ee,ereff,~,~,~,~,err] = calc_microstrip_z0(er,w,h,(f/1e6),handles,1);
-        
-         
-%         ft = sqrt(er/ee)*z0/(2*(4*pi*1e-07)*h);
-%         ereff = er - ((er-ee)/(1+((f/ft)^2)));
-        
-%         fp = z0/(8*pi*h);  Pozar's equations
-%         
-%         g = 0.6 + 0.009*z0;
-%         
-%         Gf = g*((f/fp)^2);
-%         
-%         ereff = er - ((er-ee)/(1+Gf));
+        [~,z0,z0air,ee,ereff,~,~,B,~,err] = calc_microstrip_z0(er,w,h,(f/1e6),handles,1);
 
         if(strcmp(opt,'er'))
             data_array(ii,jj) = ereff;
@@ -99,52 +90,18 @@ for ii=1:length(x)
         
         if(strcmp(opt,'z0'))
             data_array(ii,jj) = z0;
-%            ft = sqrt(er/ee)*(z0/(2*(4*pi*1E-07)*h));
-            
-%            weff = (120*pi*h)/(z0*sqrt(ee));
-%            we = w + ((weff-w)/(1+((f/ft)^2)));
-            
-%            data_array(ii,jj) = (120*pi*h)/(we*sqrt(ereff));
         end
         
         if(strcmp(opt,'velocity'))
-            
-%             x = w/h;
-%             
-%             if(x<1)
-%                 z0air = (60)*log((8/x)+0.25*x);
-%             end
-%             
-%             if(x>=1)
-%                 z0air = (120*pi)/(x+1.393+0.667*log(x+1.444));
-%             end
-%             
-%             weff = (120*pi*h)/(z0*sqrt(ee));
-%             we = w + ((weff-w)/(1+((f/ft)^2)));
-%             
-%             z0f = (120*pi*h)/(we*sqrt(ereff));
-            
             data_array(ii,jj) = (3e08)*z0/z0air; 
         end
         
         if(strcmp(opt,'delay'))
-            
-%             x = w/h;
-%             
-%             if(x<1)
-%                 z0air = (60)*log((8/x)+0.25*x);
-%             end
-%             
-%             if(x>=1)
-%                 z0air = (120*pi)/(x+1.393+0.667*log(x+1.444));
-%             end
-%             
-%             weff = (120*pi*h)/(z0*sqrt(ee));
-%             we = w + ((weff-w)/(1+((f/ft)^2)));
-%             
-%             z0f = (120*pi*h)/(we*sqrt(ereff));
-            
             data_array(ii,jj) = (1e12*l)/(3e08)*z0/z0air; 
+        end
+        
+        if(strcmp(opt,'beta'))
+            data_array(ii,jj) = B;
         end
         
         if~isempty(err)
@@ -170,10 +127,17 @@ axis(handles.plotter,[(f_start/1e6) (f_stop/1e6) 0 100])
 axis 'auto y'
 hold(handles.plotter,'on')
 
-for ii=1:num
-   p = plot(handles.plotter,(freqs/1e6),round(data_array(:,ii),3));
+if(strcmp(opt,'beta'))
+    for ii=1:num
+        axis(handles.plotter,[0 100 (f_start/(pi*2e6)) (f_stop/(pi*2e6))])
+        axis 'auto x'
+        p = plot(handles.plotter,data_array(:,ii),(freqs/1e6)/(2*pi));
+    end
+else
+    for ii=1:num
+        p = plot(handles.plotter,(freqs/1e6),data_array(:,ii));
+    end
 end
-
 
 if(strcmp(opt,'er'))
     title('Dynamic Equivalent Dielectric Constant');
@@ -197,6 +161,12 @@ if(strcmp(opt,'delay'))
     title('Group Delay');
     ylabel('Delay in ps');
     xlabel('Frequency in MHz');
+    legend(legends);
+end
+if(strcmp(opt,'beta'))
+    title('Wavenumber');
+    ylabel('Radial Frequency in Mrad/s (w)');
+    xlabel('Wavenumber (B)');
     legend(legends);
 end
 

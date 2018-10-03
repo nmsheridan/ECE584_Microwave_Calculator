@@ -158,7 +158,7 @@ if(isempty(userInput))
     return
 end
 
-[~,~,~,~,~,err] = calc_stripline_z0(str2double(userInput{1}),str2double(userInput{2}),...
+[~,~,err] = calc_stripline_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),handles,NaN);
     
 if~isempty(err)
@@ -561,7 +561,7 @@ if(isempty(userInput))
 end
 
 [~,~,err] = microstrip_plot_dynamic(handles,str2double(userInput{1}),str2double(userInput{2}),...
-        str2double(userInput{3}),'beta');
+        str2double(userInput{3}),'delay');
     
 if~isempty(err)
     warndlg(err);
