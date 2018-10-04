@@ -54,12 +54,11 @@ if(isnan(f))
     C = ereff*(8.85e-12)*120*pi/z0air;
     Vp = (3e08)*z0/z0air;
     B = 0;
-    Vg = Vp;
     
-    fT1 = (3e8)*sqrt(2/(ee-1))*atan(ee)/(2*pi*b); %SW2 mode
-    fT2 = (3e8)/(4*b*sqrt(ee-1)); %TM2 mode
-    fT3 = (3e8)/(sqrt(ee)*(2*w+b)); %TM1 mode
-    fT4 = (3e8)/(2*b*sqrt(ee)); %SW1 mode
+    fT1 = (3e8)*sqrt(2/(er-1))*atan(er)/(2*pi*b); %SW2 mode
+    fT2 = (3e8)/(4*b*sqrt(er-1)); %TM2 mode
+    fT3 = (3e8)/(sqrt(er)*(2*w+b)); %TM1 mode
+    fT4 = (3e8)/(2*b*sqrt(er)); %SW1 mode
     
     if(isnan(bypass))
         Zans = sprintf('Characteristic Impedance (z0): %.4f [Ohms]',z0);
@@ -115,8 +114,8 @@ if(~isnan(f))
     Vp = (3e08)*z0/z0air;
     B = (2*pi*f)*sqrt(ereff)/(3e8);
     
-    ddw = ((2*pi*f)*(er-ee))/((2*pi*ft)^2*(1+(f/ft)^2)^2*sqrt(ereff));
-    Vg = 1/((3e-08)*(sqrt(ereff)+2*pi*f*ddw));
+    ddw = ((2*pi*f)*(er-ee))/((2*
+    Vg = 1/((3e-08)*((1/sqrt(ereff))+2*pi*f*ddw));
     
     
     if(isnan(bypass))

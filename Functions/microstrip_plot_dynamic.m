@@ -82,7 +82,7 @@ for ii=1:length(x)
     
         er = str2double(userInput{jj+2});
         
-        [~,z0,z0air,ee,ereff,~,~,B,~,err] = calc_microstrip_z0(er,w,h,(f/1e6),handles,1);
+        [~,z0,z0air,ee,ereff,~,~,B,~,Vg,err] = calc_microstrip_z0(er,w,h,(f/1e6),handles,1);
 
         if(strcmp(opt,'er'))
             data_array(ii,jj) = ereff;
@@ -93,11 +93,11 @@ for ii=1:length(x)
         end
         
         if(strcmp(opt,'velocity'))
-            data_array(ii,jj) = (3e08)*z0/z0air; 
+            data_array(ii,jj) = Vg; 
         end
         
         if(strcmp(opt,'delay'))
-            data_array(ii,jj) = (1e12*l)/(3e08)*z0/z0air; 
+            data_array(ii,jj) = (l/Vg)*1e12; %in ps 
         end
         
         if(strcmp(opt,'beta'))

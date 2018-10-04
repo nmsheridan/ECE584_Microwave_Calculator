@@ -50,5 +50,5 @@ if(isnan(b))
 end
 
 %% Computing diff
-[~,z0_exact,~,~,~,~,~,~,~,err] = calc_microstrip_z0(er,w,b,NaN,handles,1);
+[~,z0_exact,~,~,~,~,~,~,~,~,err] = calc_microstrip_z0(er,w,b,NaN,handles,1);
 diff = ((z0-z0_exact)/z0_exact)*100;

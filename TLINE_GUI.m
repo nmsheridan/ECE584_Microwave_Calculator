@@ -182,7 +182,7 @@ if(isempty(userInput))
     return
 end
 
-[~,~,~,~,~,~,~,~,~,err] = calc_microstrip_z0(str2double(userInput{1}),str2double(userInput{2}),...
+[~,~,~,~,~,~,~,~,~,~,err] = calc_microstrip_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),str2double(userInput{4}),handles,NaN);
     
 if~isempty(err)
