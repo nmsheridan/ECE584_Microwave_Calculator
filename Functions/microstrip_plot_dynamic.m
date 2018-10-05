@@ -67,8 +67,8 @@ end
 
 %% Calculations for impedance
 
-w = (str2num(userInput{1}))*(1E-3);
-h = (str2num(userInput{2}))*(1E-3);
+w = (str2num(userInput{1}));
+h = (str2num(userInput{2}));
 
 bar = waitbar(0, 'Calculating...');
 

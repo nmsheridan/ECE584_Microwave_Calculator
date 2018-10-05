@@ -34,10 +34,10 @@ if(isnan(er)||isnan(w)||isnan(b))
     return
 end
 
-x = w/b;
+w = w/1000;
+b = b
 
-w = w/1000; %Dimensions entered in mm
-b = b/1000;
+x = w/b;
 
 if(x<=0)
     err = 'Ratio invalid!';
@@ -77,10 +77,10 @@ if(isnan(f))
         Lans = sprintf('Inductance per Unit Length (L`): %i [H/m]', L);
         Cans = sprintf('Capactiance per Unit Length (C`): %i [F/m]', C);
         Eans = sprintf('Effective Permivity at DC (er): %.4f', ee);
-        F3ans = sprintf('TM1 Mode Frequency: %.4f [GHz]',(fT3/(1e9)));
-        F2ans = sprintf('TM2 Mode Frequency: %.4f [GHz]',(fT2/(1e9)));
-        F4ans = sprintf('SW1 Mode Frequency: %.4f [GHz]',(fT4/(1e9)));
-        F1ans = sprintf('SW2 Mode Frequency: %.4f [GHz]',(fT1/(1e9)));
+        F3ans = sprintf('TM1 Mode Frequency: %.4f [MHz]',(fT3/(1e6)));
+        F2ans = sprintf('TM2 Mode Frequency: %.4f [MHz]',(fT2/(1e6)));
+        F4ans = sprintf('SW1 Mode Frequency: %.4f [MHz]',(fT4/(1e6)));
+        F1ans = sprintf('SW2 Mode Frequency: %.4f [MHz]',(fT1/(1e6)));
         
         Answer = questdlg(sprintf('Results:\n\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n', ...
             Zans, ZAirans, Lans, Cans, Eans, F3ans, F2ans, F4ans, F1ans),...

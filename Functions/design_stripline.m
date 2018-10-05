@@ -18,7 +18,7 @@ if(isnan(er)||isnan(z0)||(isnan(w)&&isnan(b))||(~isnan(w)&&~isnan(b)))
 end
 
 if(z0<=0)
-    err = 'Characteristic impedence must be greater than zero!'
+    err = 'Characteristic impedence must be greater than zero!';
     diff = 0;
     w = 0;
     b = 0;
