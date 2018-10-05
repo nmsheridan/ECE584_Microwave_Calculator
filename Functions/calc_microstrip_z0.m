@@ -23,6 +23,14 @@ err = '';
 if(isnan(er)||isnan(w)||isnan(b))
     err = 'Input argument(s) invalid for calculation!';
     z0 = NaN;
+    z0air = NaN;
+    ee = NaN;
+    L = NaN;
+    C = NaN;
+    Vp = NaN;
+    ereff = NaN;
+    Vg = NaN;
+    B = NaN;
     return
 end
 
@@ -49,7 +57,7 @@ end
 
 if(isnan(f))
 
-    ereff = er;
+    ereff = ee;
     L = z0air*(4e-07)/(120);
     C = ereff*(8.85e-12)*120*pi/z0air;
     Vp = (3e08)*z0/z0air;

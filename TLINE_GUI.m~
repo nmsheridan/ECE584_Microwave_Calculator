@@ -197,45 +197,12 @@ function CPW_z0_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-prompt = {'Dielectric Constant (er)','Conductor Width in mm (w)',...
-    'Ground Pour Separation in mm (s)','Dielectric Height (for Slub CPW) in mm (h)'};
-
-userInput = inputdlg(prompt,'Enter Paramaters for Stripline',[1 35]);
-
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
-
-[~,~,~,~,~,~,~,err] = calc_CPW_z0(str2double(userInput{1}),str2double(userInput{2}),...
-        str2double(userInput{3}),str2double(userInput{4}),NaN,handles);
-    
-if~isempty(err)
-    warndlg(err);
-end
 
 % --- Executes on button press in GCPW_z0.
 function GCPW_z0_Callback(hObject, eventdata, handles)
 % hObject    handle to GCPW_z0 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-prompt = {'Dielectric Constant (er)','Conductor Width in mm (w)',...
-    'Ground Pour Separation in mm (s)','Dielectric Height in mm (h)'};
-
-userInput = inputdlg(prompt,'Enter Paramaters for Stripline',[1 35]);
-
-if(isempty(userInput))
-    warndlg('Cancelled!');
-    return
-end
-
-[~,~,~,~,~,~,~,err] = calc_CPW_z0(str2double(userInput{1}),str2double(userInput{2}),...
-        str2double(userInput{3}),str2double(userInput{4}),NaN,handles);
-    
-if~isempty(err)
-    warndlg(err);
-end
 
 
 %% Designer Panel

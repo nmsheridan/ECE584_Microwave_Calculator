@@ -110,7 +110,7 @@ for ii=1:length(x)
         if(strcmp(opt,'beta'))
             data_array(ii,jj) = B;
             er_array(ii,jj) = (2*pi*f)*sqrt(er)/(3e8);
-            ereff_array(ii,jj) = (2*pi*f)*sqrt(ee)/(3e8);
+            er_array(ii,jj) = (2*pi*f)*sqrt(ee)/(3e8);
         end
         
         if~isempty(err)
@@ -137,12 +137,15 @@ axis 'auto y'
 hold(handles.plotter,'on')
 
 if(strcmp(opt,'beta'))
+    plot_er = (2*pi.*f).*sqrt(er)./(3e8);
+    plot_ereff = (2*pi.*f).*sqrt(ee)./(3e8);
+    axis(handles.plotter,[0 100 ((2*pi*f_start)/(3e6)) ((2*pi*f_stop)/(3e6))]);
+    axis 'auto x'
+    p = plot(handles.plotter,plot_er,(freqs/1e6)/(pi*6e8));
+    p = plot(handles.plotter,plot_ereff,(freqs/1e6)/(pi*6e8));
     for ii=1:num
-        axis(handles.plotter,[0 100 ((2*pi*f_start)/(3e8)) ((2*pi*f_stop)/(3e8))]);
-        axis 'auto x'
-        p = plot(handles.plotter,data_array(:,ii),(2*pi*freqs)/(3e8));
-        p = plot(handles.plotter,er_array(:,ii),(2*pi*freqs)/(3e8),'--g');
-        p = plot(handles.plotter,ereff_array(:,ii),(2*pi*freqs)/(3e8),'--r');
+        p = plot(handles.plotter,data_array(:,ii),(2*pi*freqs)/(3e8),data_array(:,ii),(2*pi*freqs)/(3e8)...
+            data_array(:,ii),(2*pi*freqs)/(3e8));
     end
 else
     for ii=1:num
@@ -175,9 +178,9 @@ if(strcmp(opt,'delay'))
     legend(legends);
 end
 if(strcmp(opt,'beta'))
-    title('Propigation Constant');
-    ylabel('Frequency (k)');
-    xlabel('Propagation Constant (B)');
+    title('Wavenumber');
+    ylabel('Radial Frequency in Mrad/s (w)');
+    xlabel('Wavenumber (B)');
     legend(legends);
 end
 
