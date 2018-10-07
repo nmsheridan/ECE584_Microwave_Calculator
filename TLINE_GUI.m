@@ -22,7 +22,7 @@ function varargout = TLINE_GUI(varargin)
 
 % Edit the above text to modify the response to help TLINE_GUI
 
-% Last Modified by GUIDE v2.5 04-Oct-2018 22:23:56
+% Last Modified by GUIDE v2.5 06-Oct-2018 11:44:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -600,6 +600,8 @@ function microstrip_plot_wavenumber_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% THIS PLOTS PROPAGATION CONSTANT, I MISTAKENLY CALLED THIS 'WAVENUMBER'
+
 prompt = {'Staring Frequency [MHz]','Ending Frequency [MHz]','How many Dielectrics do you want to Plot?'};
 
 userInput = inputdlg(prompt,'Enter Plot Settings',[1 35]);
@@ -611,6 +613,62 @@ end
 
 [~,~,err] = microstrip_plot_dynamic(handles,str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),'beta');
+    
+if~isempty(err)
+    warndlg(err);
+end
+
+
+% --------------------------------------------------------------------
+function GCPW_Callback(hObject, eventdata, handles)
+% hObject    handle to GCPW (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function GCPW_plot_z0_Callback(hObject, eventdata, handles)
+% hObject    handle to GCPW_plot_z0 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring w/h ratio','Ending w/h ratio','Ground Pour Separation (s)',...
+    'How many Dielectrics do you want to Plot?'};
+
+dims = [1 35];
+userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,err] = GCPW_plot_static(handles,str2double(userInput{1}),str2double(userInput{2}),...
+        str2double(userInput{3}),str2double(userInput{4}),'z0');
+    
+if~isempty(err)
+    warndlg(err);
+end
+
+% --------------------------------------------------------------------
+function GCPW_plot_ee_Callback(hObject, eventdata, handles)
+% hObject    handle to GCPW_plot_ee (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring w/h ratio','Ending w/h ratio','Ground Pour Separation (s)',...
+    'How many Dielectrics do you want to Plot?'};
+
+dims = [1 35];
+userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,err] = GCPW_plot_static(handles,str2double(userInput{1}),str2double(userInput{2}),...
+        str2double(userInput{3}),str2double(userInput{4}),'ee');
     
 if~isempty(err)
     warndlg(err);
