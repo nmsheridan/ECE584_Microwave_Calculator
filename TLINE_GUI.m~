@@ -22,7 +22,7 @@ function varargout = TLINE_GUI(varargin)
 
 % Edit the above text to modify the response to help TLINE_GUI
 
-% Last Modified by GUIDE v2.5 04-Oct-2018 22:23:56
+% Last Modified by GUIDE v2.5 07-Oct-2018 16:35:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -197,12 +197,45 @@ function CPW_z0_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+prompt = {'Dielectric Constant (er)','Conductor Width in mm (w)',...
+    'Ground Pour Separation in mm (s)','Dielectric Height (for Slub CPW) in mm (h)'};
+
+userInput = inputdlg(prompt,'Enter Paramaters for Stripline',[1 35]);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,~,~,~,~,~,err] = calc_CPW_z0(str2double(userInput{1}),str2double(userInput{2}),...
+        str2double(userInput{3}),str2double(userInput{4}),NaN,handles);
+    
+if~isempty(err)
+    warndlg(err);
+end
 
 % --- Executes on button press in GCPW_z0.
 function GCPW_z0_Callback(hObject, eventdata, handles)
 % hObject    handle to GCPW_z0 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Dielectric Constant (er)','Conductor Width in mm (w)',...
+    'Ground Pour Separation in mm (s)','Dielectric Height in mm (h)'};
+
+userInput = inputdlg(prompt,'Enter Paramaters for Stripline',[1 35]);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,~,~,~,~,~,err] = calc_CPW_z0(str2double(userInput{1}),str2double(userInput{2}),...
+        str2double(userInput{3}),str2double(userInput{4}),NaN,handles);
+    
+if~isempty(err)
+    warndlg(err);
+end
 
 
 %% Designer Panel
@@ -567,6 +600,8 @@ function microstrip_plot_wavenumber_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% THIS PLOTS PROPAGATION CONSTANT, I MISTAKENLY CALLED THIS 'WAVENUMBER'
+
 prompt = {'Staring Frequency [MHz]','Ending Frequency [MHz]','How many Dielectrics do you want to Plot?'};
 
 userInput = inputdlg(prompt,'Enter Plot Settings',[1 35]);
@@ -583,3 +618,90 @@ if~isempty(err)
     warndlg(err);
 end
 
+
+% --------------------------------------------------------------------
+function GCPW_Callback(hObject, eventdata, handles)
+% hObject    handle to GCPW (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function GCPW_plot_z0_Callback(hObject, eventdata, handles)
+% hObject    handle to GCPW_plot_z0 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring w/h ratio','Ending w/h ratio','Ground Pour Separation (s)',...
+    'How many Dielectrics do you want to Plot?'};
+
+dims = [1 35];
+userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,err] = GCPW_plot_static(handles,str2double(userInput{1}),str2double(userInput{2}),...
+        str2double(userInput{3}),str2double(userInput{4}),'z0');
+    
+if~isempty(err)
+    warndlg(err);
+end
+
+% --------------------------------------------------------------------
+function GCPW_plot_ee_Callback(hObject, eventdata, handles)
+% hObject    handle to GCPW_plot_ee (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring w/h ratio','Ending w/h ratio','Ground Pour Separation (s)',...
+    'How many Dielectrics do you want to Plot?'};
+
+dims = [1 35];
+userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,err] = GCPW_plot_static(handles,str2double(userInput{1}),str2double(userInput{2}),...
+        str2double(userInput{3}),str2double(userInput{4}),'ee');
+    
+if~isempty(err)
+    warndlg(err);
+end
+
+
+% --------------------------------------------------------------------
+function Arbitrary_Callback(hObject, eventdata, handles)
+% hObject    handle to Arbitrary (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function arbitrary_B_Callback(hObject, eventdata, handles)
+% hObject    handle to arbitrary_B (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring Frequency [MHz]','Ending Frequency [MHz]','Shunt Capacitance Per Unit Legnth [F/m]',...
+    'Series Inductance Per Unit Length [h/m]','Series Capacitance Per Unit Length [F/m]'};
+
+dims = [1 35];
+userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,err] = arbitrary_plot_static(handles,str2double(userInput{1}),str2double(userInput{2}),...
+        str2double(userInput{3}),str2double(userInput{4}),handles);
+    
+if~isempty(err)
+    warndlg(err);
+end

@@ -22,7 +22,7 @@ function varargout = TLINE_GUI(varargin)
 
 % Edit the above text to modify the response to help TLINE_GUI
 
-% Last Modified by GUIDE v2.5 06-Oct-2018 11:44:05
+% Last Modified by GUIDE v2.5 07-Oct-2018 16:35:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -669,6 +669,38 @@ end
 
 [~,~,err] = GCPW_plot_static(handles,str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),str2double(userInput{4}),'ee');
+    
+if~isempty(err)
+    warndlg(err);
+end
+
+
+% --------------------------------------------------------------------
+function Arbitrary_Callback(hObject, eventdata, handles)
+% hObject    handle to Arbitrary (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function arbitrary_B_Callback(hObject, eventdata, handles)
+% hObject    handle to arbitrary_B (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring Frequency [MHz]','Ending Frequency [MHz]','Shunt Capacitance Per Unit Legnth [F/m]',...
+    'Series Inductance Per Unit Length [h/m]','Series Capacitance Per Unit Length [F/m]'};
+
+dims = [1 35];
+userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,err] = arbitrary_plot_static(str2double(userInput{4}),str2double(userInput{5}),str2double(userInput{3}),...
+        str2double(userInput{1}),str2double(userInput{2}),'beta',handles);
     
 if~isempty(err)
     warndlg(err);
