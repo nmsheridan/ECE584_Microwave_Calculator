@@ -50,6 +50,6 @@ if(isnan(b))
 end
 
 %% Computing diff
-[~,z0_exact,~,~,~,err] = calc_stripline_z0(er,w,b,handles,1);
+[handles,z0_exact,~,~,~,err] = calc_stripline_z0(er,w,b,handles,1);
 diff = ((z0-z0_exact)/z0_exact)*100;
 

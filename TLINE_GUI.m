@@ -22,7 +22,7 @@ function varargout = TLINE_GUI(varargin)
 
 % Edit the above text to modify the response to help TLINE_GUI
 
-% Last Modified by GUIDE v2.5 07-Oct-2018 16:35:58
+% Last Modified by GUIDE v2.5 09-Oct-2018 21:10:04
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -106,13 +106,14 @@ if(isempty(userInput))
 end
 
 %Function call to the calc_twoWire_z0 function
-[~,~,err] = calc_twoWire_z0(str2double(userInput{1}),str2double(userInput{2}),...
+[handles,~,err] = calc_twoWire_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),handles);
 
 %Prints-out error from calculator function (if there is one)
 if~isempty(err)
     warndlg(err);
 end
+guidata(hObject, handles);
 
 %All TLine z0 calculators have the same UI code associated with them
 
@@ -134,12 +135,13 @@ if(isempty(userInput))
     return
 end
 
-[~,~,err] = calc_coax_z0(str2double(userInput{1}),str2double(userInput{2}),...
+[handles,~,err] = calc_coax_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),handles);
     
 if~isempty(err)
     warndlg(err);
 end
+guidata(hObject, handles);
 
 
 % --- Executes on button press in stripline_z0.
@@ -158,13 +160,13 @@ if(isempty(userInput))
     return
 end
 
-[~,~,~,~,~,err] = calc_stripline_z0(str2double(userInput{1}),str2double(userInput{2}),...
+[handles,~,~,~,~,err] = calc_stripline_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),handles,NaN);
     
 if~isempty(err)
     warndlg(err);
 end
-
+guidata(hObject, handles);
 
 % --- Executes on button press in microstrip_z0.
 function microstrip_z0_Callback(hObject, eventdata, handles)
@@ -182,12 +184,13 @@ if(isempty(userInput))
     return
 end
 
-[~,~,~,~,~,~,~,~,~,~,err] = calc_microstrip_z0(str2double(userInput{1}),str2double(userInput{2}),...
+[handles,~,~,~,~,~,~,~,~,~,err] = calc_microstrip_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),str2double(userInput{4}),handles,NaN);
     
 if~isempty(err)
     warndlg(err);
 end
+guidata(hObject, handles);
 
 
 
@@ -207,12 +210,13 @@ if(isempty(userInput))
     return
 end
 
-[~,~,~,~,~,~,~,err] = calc_CPW_z0(str2double(userInput{1}),str2double(userInput{2}),...
+[handles,~,~,~,~,~,~,err] = calc_CPW_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),str2double(userInput{4}),NaN,handles);
     
 if~isempty(err)
     warndlg(err);
 end
+guidata(hObject, handles);
 
 % --- Executes on button press in GCPW_z0.
 function GCPW_z0_Callback(hObject, eventdata, handles)
@@ -230,13 +234,13 @@ if(isempty(userInput))
     return
 end
 
-[~,~,~,~,~,~,~,err] = calc_CPW_z0(str2double(userInput{1}),str2double(userInput{2}),...
+[handles,~,~,~,~,~,~,err] = calc_CPW_z0(str2double(userInput{1}),str2double(userInput{2}),...
         str2double(userInput{3}),str2double(userInput{4}),NaN,handles);
     
 if~isempty(err)
     warndlg(err);
 end
-
+guidata(hObject, handles);
 
 %% Designer Panel
 
@@ -272,6 +276,7 @@ else
     questdlg(sprintf('Your stripline should have:\n\nW: %d\nB: %d\ner: %d\nZo: %d\n% error: %d %',...
         w, b, str2num(userInput{1}), str2num(userInput{2}), diff),'Result','OK','OK');
 end
+guidata(hObject, handles);
 
 
 % --- Executes on button press in design_microstrip.
@@ -705,3 +710,108 @@ end
 if~isempty(err)
     warndlg(err);
 end
+
+
+% --------------------------------------------------------------------
+function arbitrary_plot_group_Callback(hObject, eventdata, handles)
+% hObject    handle to arbitrary_plot_group (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring Frequency [MHz]','Ending Frequency [MHz]','Shunt Capacitance Per Unit Legnth [F/m]',...
+    'Series Inductance Per Unit Length [h/m]','Series Capacitance Per Unit Length [F/m]'};
+
+dims = [1 35];
+userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,err] = arbitrary_plot_static(str2double(userInput{4}),str2double(userInput{5}),str2double(userInput{3}),...
+        str2double(userInput{1}),str2double(userInput{2}),'group',handles);
+    
+if~isempty(err)
+    warndlg(err);
+end
+
+
+% --------------------------------------------------------------------
+function arbitrary_plot_phase_Callback(hObject, eventdata, handles)
+% hObject    handle to arbitrary_plot_phase (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring Frequency [MHz]','Ending Frequency [MHz]','Shunt Capacitance Per Unit Legnth [F/m]',...
+    'Series Inductance Per Unit Length [h/m]','Series Capacitance Per Unit Length [F/m]'};
+
+dims = [1 35];
+userInput = inputdlg(prompt,'Enter Plot Settings',dims);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,~,err] = arbitrary_plot_static(str2double(userInput{4}),str2double(userInput{5}),str2double(userInput{3}),...
+        str2double(userInput{1}),str2double(userInput{2}),'velocity',handles);
+    
+if~isempty(err)
+    warndlg(err);
+end
+
+%% Analsys Menu
+
+% --------------------------------------------------------------------
+function analysis_Callback(hObject, eventdata, handles)
+% hObject    handle to analysis (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function view_saved_Callback(hObject, eventdata, handles)
+% hObject    handle to view_saved (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+userInput = questdlg('Select which memory slot to view','View Memory',...
+    'Memory Slot 1','Memory Slot 2','Cancel','Cancel');
+
+if(strcmp(userInput,'Cancel')||isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+if(strcmp(userInput,'Memory Slot 1'))
+   if(isempty(handles.z0{1}))
+      warndlg('Memory slot is empty!');
+      return
+   end
+   Zans = sprintf('Charactersitc Impedance: %.4f [Ohms]',handles.z0{1});
+   Lans = sprintf('Inductance per Unit Length: %.4f [nH/m]',handles.L{1}*1e9);
+   Cans = sprintf('Capacitance per Unit Length: %.4f [uF/m]',handles.C{1}*1e6);
+   
+   questdlg(sprintf('Transmission Line Parameters:\n\n%s\n%s\n%s\n',Zans,Lans,Cans),...
+       'Memory Slot 1','OK','OK');
+end
+
+if(strcmp(userInput,'Memory Slot 2'))
+   if(isempty(handles.z0{2}))
+      warndlg('Memory slot is empty!');
+      return
+   end
+   Zans = sprintf('Charactersitc Impedance: %.4f [Ohms]',handles.z0{2});
+   Lans = sprintf('Inductance per Unit Length: %.4f [nH/m]',handles.L{2}*1e9);
+   Cans = sprintf('Capacitance per Unit Length: %.4f [uF/m]',handles.C{2}*1e6);
+   
+   questdlg(sprintf('Transmission Line Parameters:\n\n%s\n%s\n%s\n',Zans,Lans,Cans),...
+       'Memory Slot 2','OK','OK');
+end
+
+% --------------------------------------------------------------------
+function calc_reflection_Callback(hObject, eventdata, handles)
+% hObject    handle to calc_reflection (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
