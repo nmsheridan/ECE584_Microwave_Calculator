@@ -3,67 +3,33 @@
 % October 2018
 % Draws the Smith Chart as per Problem 3 on Homework 3
 
+r = cat(2,linspace(0,1,11),linspace(1.2,2,5));
+r = cat(2,r,linspace(3,10,8));
+r = cat(2,r,linspace(20,50,4));
+x = r;
+
 figure
 hold on
 
+for ii = 1:length(r)
+    for jj = 1:length(x)
+        centerx1 = r(ii)/(1+r(ii));
+        centery1 = 0;
+        radius1 = 1/(1+r(ii));
+        centerx2 = 1;
+        centery2 = 1/x(jj);
+        radius2 = abs(1/x(jj));
+        
+        circle(centerx1,centery1,radius1);
+        circle(centerx2,centery2,radius2);
+    end
+end
 
-r = cat(2,linspace(0,1,11),linspace(1,2,6));
-r = cat(2,r,linspace(2,10,10));
-r = cat(2,r,linspace(10,50,5));
-x = r;
-
-centerx1 = r/(1+r);
-centery1 = 0*x;
-radius1 = r/(1+r);
-centerx2 = 1 + 0*r;
-centery2 = 1./x;
-radius2 = 1./x;
-
-circle(centerx1,centery1,radius1);
-circle(centerx2,centery2,radius2);
-
-r = linspace(1,2,6);
-x = linspace(1,2,6);
-
-centerx1 = r/(1+r);
-centery1 = 0*x;
-radius1 = r/(1+r);
-centerx2 = 1 + 0*r;
-centery2 = 1./x;
-radius2 = 1./x;
-
-circle(centerx1,centery1,radius1);
-circle(centerx2,centery2,radius2);
-
-r = linspace(2,10,10);
-x = linspace(2,10,10);
-
-centerx1 = r/(1+r);
-centery1 = 0*x;
-radius1 = r/(1+r);
-centerx2 = 1 + 0*r;
-centery2 = 1./x;
-radius2 = 1./x;
-
-circle(centerx1,centery1,radius1);
-circle(centerx2,centery2,radius2);
-
-r = linspace(10,50,5);
-x = linspace(10,50,5);
-
-centerx1 = r/(1+r);
-centery1 = 0*x;
-radius1 = r/(1+r);
-centerx2 = 1 + 0*r;
-centery2 = 1./x;
-radius2 = 1./x;
-
-circle(centerx1,centery1,radius1);
-circle(centerx2,centery2,radius2);
+hold off
 
 function h = circle(x,y,r) %Got this function for plotting circles from the MathWorks website
-th = 0:pi/50:2*pi;
-xunit = r*cos(th) + x;
-yunit = r*sin(th) + y;
-h = plot(xunit, yunit);
+ang=0:0.01:2*pi; 
+xp=r*cos(ang);
+yp=r*sin(ang);
+h = plot(x+xp,y+yp,'k');
 end
