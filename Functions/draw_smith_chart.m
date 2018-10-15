@@ -6,7 +6,7 @@
 r = cat(2,linspace(0,1,11),linspace(1.2,2,5));
 r = cat(2,r,linspace(3,10,8));
 r = cat(2,r,linspace(20,50,4));
-x = r;
+x = cat(2,-flip(r),r(2:length(r)));
 
 figure
 hold on
@@ -25,6 +25,8 @@ for ii = 1:length(r)
     end
 end
 
+title('Full Smith Chart (in case you also wanted this)');
+axis([-1 1 -1 1])
 hold off
 
 function h = circle(x,y,r) %Got this function for plotting circles from the MathWorks website

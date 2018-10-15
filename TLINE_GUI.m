@@ -815,3 +815,56 @@ function calc_reflection_Callback(hObject, eventdata, handles)
 % hObject    handle to calc_reflection (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+userInput = questdlg('Select which memory slot to use for reflection analysis',...
+    'Reflection Analysis','Memory Slot 1','Memory Slot 2','Manually Enter Parameters',...
+    'Memory Slot 1');
+
+if(strcmp(userInput,'Cancel')||isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+if(strcmp(userInput,'Memory Slot 1'))
+   if(isempty(handles.z0{1}))
+      warndlg('Memory slot is empty!');
+      return
+   end
+   
+   [~,err] = analyze_reflection(handles,handles.L{1},handles.C{1},handles.z0{1});
+   
+    if(~isempty(err))
+        warndlg(err);
+    end
+   
+end
+
+if(strcmp(userInput,'Memory Slot 2'))
+   if(isempty(handles.z0{2}))
+      warndlg('Memory slot is empty!');
+      return
+   end
+   
+   [~,err] = analyze_reflection(handles,handles.L{2},handles.C{2},handles.z0{2});
+   
+   if(~isempty(err))
+       warndlg(err);
+   end
+    
+end
+
+if(strcmp(userInput,'Manually Enter Parameters'))
+    
+    prompts = {'Characteristic Impedance of Transmission Line',...
+        'Capacitance per Unit Length','Inductance per Unit Length'};
+    
+    newInput = inputdlg(prompts,'Manual Input',[1 35]);
+    
+   [~,err] = analyze_reflection(handles,str2double(newInput{3}),...
+       str2double(newInput{2}),str2double(newInput{1}));
+   
+   if(~isempty(err))
+       warndlg(err);
+   end
+    
+end

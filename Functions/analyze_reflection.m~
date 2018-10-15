@@ -5,16 +5,15 @@ function [handles,err] = analyze_reflection(handles,L,C,z0)
 % This function will calculate the reflection paramters given a transmission
 % line and the complex impedance of the load
 
-err = '';
 
 if(isempty(L)||isempty(C)||isempty(z0))
     err = 'Error with inputted values\n(Are you sure they are not blank?';
     return
 end
 
-prompts = {'Load impedance real component','Load impedance imaginary component',...
+prompts = ['Load impedance real component','Load impedance imaginary component',...
     'n\OR\n\nLoad impedance magnitude','Load impedance phase-angle','Frequency in MHz',...
-    'Length of Transmission Line in mm'};
+    'Length of Transmission Line in mm'];
 
 userInput = inputdlg(prompts,'Load Parameters',[1 35]);
 
@@ -51,7 +50,7 @@ VSWR = (1+abs(r))/(1-abs(r));
 
 zans = sprintf('For transmission line with characteristic %.4f and load impedance %.4f:\n',z0,zl);
 rans = sprintf('Voltage Reflection Coefficient: %.4f',r);
-returnans = sprintf('Return Loss: %.4f [dB]',return_loss);
+returnans = sprtinf('Return Loss: %.4f [dB]',return_loss);
 vswrans = sprintf('Voltage Standing Wave Ratio: %.4f [V/V]',VSWR);
 zinans = '';
 
@@ -60,10 +59,8 @@ if((~(isempty(userInput{5})||isempty(userInput{6})))||isnan(L)||isnan(C))
     l = str2double(userInput{5})/1e3; %length entered in mm
     b = 2*pi*f*sqrt(L*C);
     
-    Zin = z0*(zl + j*z0*tan(b*l))/(z0 + j*zl*tan(b*l));
+    Zin = 
     
-    zinans = sprintf('Input Impedance at %.2f [mm] from Load: %s [Ohms]',...
-        (l*1e3), num2str(Zin));
 end
 
 newInput = questdlg(sprintf('%s\n%s\n%s\n%s\n%s\n',zans,rans,returnans,vswrans,zinans),'Results',...
