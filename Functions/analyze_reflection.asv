@@ -80,7 +80,7 @@ if(strcmp(newInput,'Plot Input Impedance'))
     prompts = ['Enter length of tranmission line in mm','Enter starting frequency in MHz',...
         'Enter stopping frequency in MHz'];
     
-    linput = inputdlg(prompts,'Length',[1 35]);
+    linput = questdlg(prompts,'Length',[1 35]);
     
     if(isempy(linput))
        warndlg('Cancelled!')
@@ -104,5 +104,5 @@ if(strcmp(newInput,'Plot Input Impedance'))
         Zin(ii,2) = imag(z0*(zl + j*z0*tan(b*l))/(z0 + j*zl*tan(b*l)));    
     end
     
-    plot(w,Zin(:,1),w,Zin(:,2));
+    plot(
 end
