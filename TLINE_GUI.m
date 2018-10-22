@@ -856,15 +856,20 @@ end
 if(strcmp(userInput,'Manually Enter Parameters'))
     
     prompts = {'Characteristic Impedance of Transmission Line',...
-        'Capacitance per Unit Length','Inductance per Unit Length'};
+        sprintf('HINT: For zero-length approxmation, enter 0 for L & C\n\nCapacitance per Unit Length'),...
+        'Inductance per Unit Length'};
     
     newInput = inputdlg(prompts,'Manual Input',[1 35]);
     
-   [~,err] = analyze_reflection(handles,str2double(newInput{3}),...
-       str2double(newInput{2}),str2double(newInput{1}));
-   
-   if(~isempty(err))
-       warndlg(err);
-   end
+    if(isempty(newInput))
+        warndlg('Cancelled!');return;
+    end
+    
+    [~,err] = analyze_reflection(handles,str2double(newInput{3}),...
+        str2double(newInput{2}),str2double(newInput{1}));
+        
+    if(~isempty(err))
+        warndlg(err);
+    end
     
 end

@@ -26,7 +26,7 @@ if(isnan(h))
     
     warndlg('Assuming semi-infinite dielectric!');
     
-    ee = (er + 1);
+    ee = (er + 1)/2;
     
     z0 = (30*pi/sqrt(ee))*zratio(ksi);
     

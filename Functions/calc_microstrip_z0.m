@@ -128,6 +128,11 @@ if(~isnan(f))
     ddw = ((2*pi*f)*(er-ee))/((2*pi*ft)^2*(1+(f/ft)^2)^2*sqrt(ereff));
     Vg = 1/((3e-08)*(sqrt(ereff)+2*pi*f*ddw));
     
+    weff = (120*pi*b)/(z0*sqrt(ee));
+    wf = w + ((weff - w)/(1+((f/ft)^2)));
+    
+    z0 = (120*pi*b)/(wf*sqrt(ereff));
+    
     
     if(isnan(bypass))
         Zans = sprintf('Characteristic Impedance (z0): %.4f [Ohms]',z0);
