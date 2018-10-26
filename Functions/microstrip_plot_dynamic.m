@@ -89,7 +89,7 @@ for ii=1:length(x)
     
         er = str2double(userInput{jj+2});
         
-        [~,z0,z0air,ee,ereff,~,~,B,~,Vg,err] = calc_microstrip_z0(er,w,h,(f/1e6),handles,1);
+        [~,z0,~,ee,ereff,~,~,B,~,Vg,err] = calc_microstrip_z0(er,w,h,(f/1e6),handles,1);
 
         if(strcmp(opt,'er'))
             data_array(ii,jj) = ereff;

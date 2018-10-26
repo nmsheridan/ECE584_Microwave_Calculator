@@ -47,7 +47,7 @@ for ii=1:(x_stop-x_start)
     for jj=1:num
     
         [~,~,data_array(ii,jj),~,~,~,~,~,~,~,err] = calc_microstrip_z0(str2double(userInput{jj}),(x_start+ii),...
-            1,handles,1);
+            1,NaN,handles,1);
         
         if~isempty(err)
             p = NaN;
