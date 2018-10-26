@@ -61,7 +61,7 @@ if(isnan(f))
 
     ereff = ee;
     L = z0air*(4e-07)/(120);
-    C = ereff*(8.85e-12)*120*pi/z0air;
+    C = ereff*(8.854e-12)*120*pi/z0air;
     Vp = (3e08)*z0/z0air;
     B = 0;
     Vg = Vp;
