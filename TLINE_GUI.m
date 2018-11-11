@@ -22,7 +22,7 @@ function varargout = TLINE_GUI(varargin)
 
 % Edit the above text to modify the response to help TLINE_GUI
 
-% Last Modified by GUIDE v2.5 09-Oct-2018 21:10:04
+% Last Modified by GUIDE v2.5 09-Nov-2018 20:38:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,6 +65,7 @@ handles.L = cell(2);
 handles.C = cell(2);
 handles.R = cell(2);
 handles.G = cell(2);
+handles.alpha = cell(2);
 
 % Update handles structure
 guidata(hObject, handles);
@@ -625,6 +626,29 @@ end
 
 
 % --------------------------------------------------------------------
+function microstrip_plot_smatrix_Callback(hObject, eventdata, handles)
+% hObject    handle to microstrip_plot_smatrix (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+prompt = {'Staring Frequency [MHz]','Ending Frequency [MHz]'};
+
+userInput = inputdlg(prompt,'Enter Plot Settings',[1 35]);
+
+if(isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+[~,err] = plot_s_matrix_ms(str2double(userInput{1}),str2double(userInput{2}),...
+    handles);
+    
+if~isempty(err)
+    warndlg(err);
+end
+
+
+% --------------------------------------------------------------------
 function GCPW_Callback(hObject, eventdata, handles)
 % hObject    handle to GCPW (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -873,3 +897,91 @@ if(strcmp(userInput,'Manually Enter Parameters'))
     end
     
 end
+
+
+% --------------------------------------------------------------------
+function draw_smith_chart_Callback(hObject, eventdata, handles)
+% hObject    handle to draw_smith_chart (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+draw_smith_chart
+
+
+% --------------------------------------------------------------------
+function calc_smatrix_Callback(hObject, eventdata, handles)
+% hObject    handle to calc_smatrix (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+userInput = questdlg('Select which memory slot to use for S parameter matrix calculation',...
+    'S Parameter Matrix','Memory Slot 1','Memory Slot 2','Manually Enter Parameters',...
+    'Memory Slot 1');
+
+if(strcmp(userInput,'Cancel')||isempty(userInput))
+    warndlg('Cancelled!');
+    return
+end
+
+if(strcmp(userInput,'Memory Slot 1'))
+   if(isempty(handles.z0{1}))
+      warndlg('Memory slot is empty!');
+      return
+   end
+   
+   len = inputdlg('Enter length of transmission line:','S Parameter',[1 35]);
+   
+   [s11,s12,s21,s22] = smatrix(handles.z0{1},handles.alpha{1},str2double(len{1}),handles);
+   
+   sanser = sprintf('S Parameter Matrix:\n\nS11: %s [dB]       S12: %s [dB]\n\nS21: %s [dB]       S22: %s [dB]\n',...
+       s11,s12,s21,s22);
+   
+   questdlg(sanser,'Result');
+    
+   
+end
+
+if(strcmp(userInput,'Memory Slot 2'))
+   if(isempty(handles.z0{2}))
+      warndlg('Memory slot is empty!');
+      return
+   end
+   
+   len = inputdlg('Enter length of transmission line:','S Parameter',[1 35]);
+   
+   [s11,s12,s21,s22] = smatrix(handles.z0{2},handles.alpha{2},str2double(len{2}),handles);
+   
+   sanser = sprintf('S Parameter Matrix:\n\nS11: %s [dB]       S12: %s [dB]\n\nS21: %s [dB]       S22: %s [dB]\n',...
+       s11,s12,s21,s22);
+   
+   questdlg(sanser,'Result');
+    
+end
+
+if(strcmp(userInput,'Manually Enter Parameters'))
+    
+    prompts = {'Characteristic Impedance of Transmission Line','Attenuation Constant',...
+        'Propigation Constant','Length of Transmission Line [mm]'};
+    
+    newInput = inputdlg(prompts,'Manual Input',[1 35]);
+    
+    if(isempty(newInput))
+        warndlg('Cancelled!');return;
+    end
+    
+    [s11,s12,s21,s22] = smatrix(str2Double(newInput{1}),(str2Double(newInput{2}))+ j*str2Double(newInput{3}),...
+        str2Double(newInput{4}),handles);
+   
+   sanser = sprintf('S Parameter Matrix:\n\nS11: %s [dB]       S12: %s [dB]\n\nS21: %s [dB]       S22: %s [dB]\n',...
+       s11,s12,s21,s22);
+   
+   questdlg(sanser,'Result');
+    
+end
+
+
+% --------------------------------------------------------------------
+function plot_smatrix_Callback(hObject, eventdata, handles)
+% hObject    handle to plot_smatrix (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+

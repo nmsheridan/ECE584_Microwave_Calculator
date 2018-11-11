@@ -155,6 +155,7 @@ if(~isnan(f))
             handles.z0{1} = z0;
             handles.L{1} = L;
             handles.C{1} = C;
+            handles.alpha{1} = j*B;
             
             questdlg('Transmission Line Parameters saved to Slot 1!','Save','OK','OK');
             
@@ -165,6 +166,7 @@ if(~isnan(f))
             handles.z0{2} = z0;
             handles.L{2} = L;
             handles.C{2} = C;
+            handles.alpha{2} = j*B;
             
             questdlg('Transmission Line Parameters saved to Slot 2!','Save','OK','OK');
             

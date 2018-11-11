@@ -21,11 +21,12 @@ for ii = 1:length(r)
         radius2 = abs(1/x(jj));
         
         circle(centerx1,centery1,radius1);
-        circle(centerx2,centery2,radius2);
+        circle(centerx2,centery2,radius2);     
     end
 end
 
-title('Full Smith Chart (in case you also wanted this)');
+
+title('Smith Chart');
 axis([-1 1 -1 1])
 hold off
 
